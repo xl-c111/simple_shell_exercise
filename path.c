@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 		
 		token = strtok(path_copy, ":"); /* split the PATH string by colon : to get individual directory path */
 		
-		while (token != NULL)   /* inner loop: for each command, it loops through full PATH to until it finds the executable file */        
+		while (token != NULL)   /* inner loop: for each command, it loops through full PATH until it finds the executable file */        
 		{
 			/* build the full path to the file(argv[i]) by combining the directory name (token) */   
 			/* %s/%s: the format string that tells snprintf to combine two strings with a slash / */
