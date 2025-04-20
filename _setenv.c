@@ -9,7 +9,7 @@ extern char **environ;
  * @name: name of the environment variable
  * @value: value to set
  * @overwrite: tell the _setenv whether to replace the existing value of an environment
- *             variable if it already exists
+ *             variable if it already exists(you control the behavior by how you call the function)
  *             overwrite == 0, do not change the existing variable
  *             oevrwrite != 0, replace the existing variable
  *                 _setenv("PATH", "/my/custom/bin", 0); // does nothing
@@ -19,12 +19,24 @@ extern char **environ;
  * 
  *
  * Description: 
- *  - sprintf(env_string, "%s=%s", name, value);
- *    - sprintf - write a format output string
- *    - @env_string: the destination buffer - where the formatted result will be stored
- *    - @"%s=%s": this is the format string(first string = second string) '%s' is palceholder for string, '=' is equal sign
- *    - @name: replace the first string
- *    - @value: replace the second string
+ * 1, validate the input, name and value must not be NULL, name must not contain '='
+ *
+ * 2, search existing environment array(environ[i])
+ *    - loop through the env array
+ *    - if found and overwrite == 0, do not modify and return
+ *    - if overwrite != 0, build a new "name = value" string by sprintf(env_string, "%s=%s", name, value)
+ *               - sprintf - write a format output string
+ *               - @env_string: the destination buffer - where the formatted result will be stored
+ *               - @"%s=%s": this is the format string(first string = second string) '%s' is palceholder for string, '=' is equal sign
+ *               - @name: replace the first string
+ *               - @value: replace the second string
+ *
+ * 3, if the variable not found
+ *    - allocate a new, larger memory: new_environ = malloc((i + 2) * sizeof(char *));
+ *    - copy the old environment entries into the new array by using a for loop: new_environ[j] = environ[j];
+ *    - add the new "new = value" entry to the end: new_environ[i] = env_string; new_environ[i + 1] = NULL;
+ *    - update environ to point to new array: environ = new_environ;
+ * 
  *
  */
 int _setenv(const char *name, const char *value, int overwrite)
