@@ -54,16 +54,15 @@ int _unsetenv(const char *name)
 	{
 		if (strncmp(environ[i], name, name_len) == 0 && environ[i][name_len] == '=')
 		{
-			free(environ[i]);
 			/* suppose the target variable is at the position i, starting from i */
 			for (j = i; environ[j] != NULL; j++)
 			{
 				environ[j] = environ[j + 1];  /* replace the current position with the next one */
 				/* loop continues until environ[j + 1] reaches NULL, meaning we copy the final NULL into environ[j] */
 			}
+			environ[j] = NULL;
+			return (0);
 		}
-		environ[j] = NULL;
-		return (0);
 	}
 	return (0);
 }
